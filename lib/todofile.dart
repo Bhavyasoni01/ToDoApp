@@ -8,6 +8,8 @@ final bool taskDone;
 Function(bool?)? onChanged;
 Function(BuildContext)? deletefunction;
 Function(BuildContext)? completeFunction;
+Function(BuildContext)? editFunction;
+
 
 
    Todofile({super.key,
@@ -15,7 +17,8 @@ Function(BuildContext)? completeFunction;
   required this.taskName,
   required this.onChanged,
   required this.deletefunction,
-  required this.completeFunction
+  required this.completeFunction,
+  required this.editFunction,
   });
 
   @override
@@ -30,7 +33,6 @@ class _TodofileState extends State<Todofile> {
       child: Slidable(
         endActionPane: ActionPane(
           motion: StretchMotion(), 
-
           children: [
             SlidableAction(
               onPressed: widget.deletefunction,
@@ -54,31 +56,44 @@ class _TodofileState extends State<Todofile> {
             )
           ]
         ),
-        child: Container(
-          height: 100,
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(72, 74, 74, 1),
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: Row(
-            children: [
-              Checkbox(
-                value: widget.taskDone, 
-                onChanged: widget.onChanged,
-                side: const BorderSide(
-                  color: Colors.white
+        child: GestureDetector(
+          onLongPress: (){
+            if(widget.editFunction != null){
+              widget.editFunction!(context);
+            }
+          },
+          child: Container(
+            height: 100,
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(72, 74, 74, 1),
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: widget.taskDone, 
+                  onChanged: widget.onChanged,
+                  side: const BorderSide(
+                    color: Colors.white
+                  ),
+                  activeColor: Colors.black,
                 ),
-                activeColor: Colors.black,
-              ),
-              Text(
-                widget.taskName,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  decoration: widget.taskDone? TextDecoration.lineThrough : TextDecoration.none
-                ),
-              )
-            ],
+                Expanded(
+                  child: Text(
+                    widget.taskName,
+                    
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      decoration: widget.taskDone? TextDecoration.lineThrough : TextDecoration.none
+                    ),
+                    softWrap: true,
+                    maxLines: 3,
+                    overflow: TextOverflow.visible,
+                  ),
+                )
+              ],
+            ),
           ),
         )
       ),

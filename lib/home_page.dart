@@ -17,11 +17,12 @@ class _HomePageState extends State<HomePage> {
   late Box _myBox;
   late ToDoDatabase db;
 
+
+
   @override
   void initState() {
     super.initState();
     
-    // Initialize box and database after ensuring they're available
     _myBox = Hive.box('myBox');
     db = ToDoDatabase();
 
@@ -31,6 +32,39 @@ class _HomePageState extends State<HomePage> {
     else{
       db.loadData();
     }
+  }
+
+  void editTask(int index){
+    _controller.text = db.toDoList[index][0];
+
+    showDialog(
+    context: context, 
+    builder: (context){
+      return DialogBox(
+        controller: _controller,
+        onSave: ()=> saveEditedTask(index),
+        onCancel: cancelTask,
+      );
+    });
+  }
+
+  void saveEditedTask(int index){
+    setState(() {
+      if(_controller.text.trim().isEmpty){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Please Enter task"),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+        );
+        return;
+
+      }
+      db.toDoList[index][0]=_controller.text.trim();
+      _controller.clear();
+      Navigator.of(context).pop();
+    });
+    db.updateData();
   }
 
   void taskComplete(index){
@@ -44,10 +78,18 @@ class _HomePageState extends State<HomePage> {
 
   void savetask(){
     setState(() {
+      if(_controller.text.trim().isEmpty){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Please Enter task"),
+            backgroundColor: Colors.red[400],
+            duration: Duration(seconds: 2)   
+            ));
+          return;
+      }
       db.toDoList.add([_controller.text, false]);
-      // Sort the list: incomplete tasks first, completed tasks last
       db.toDoList.sort((a, b) => a[1] == b[1] ? 0 : (a[1] ? 1 : -1));
-      _controller.clear(); // Clear the text field
+      _controller.clear(); 
       Navigator.of(context).pop();
     });
     db.updateData();
@@ -55,7 +97,7 @@ class _HomePageState extends State<HomePage> {
 
   void cancelTask(){
     setState(() {
-      _controller.clear(); // Clear the text field
+      _controller.clear();
       Navigator.of(context).pop();
     });
     db.updateData();
@@ -105,14 +147,6 @@ class _HomePageState extends State<HomePage> {
           ),
           ),
         ),
-        actions: [
-          IconButton(
-          onPressed: (){
-             Text('Coming Soon');
-          }, 
-        icon: Icon(Icons.settings,
-        color: Colors.white,)) 
-        ],
       ),
 
      floatingActionButton: FloatingActionButton(onPressed: (){
@@ -149,6 +183,7 @@ class _HomePageState extends State<HomePage> {
             });
             db.updateData();
           },
+          editFunction: (context)=>editTask(index),
         );
       }
     ),

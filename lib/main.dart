@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:todoapp/home_page.dart';
+import 'package:todoapp/settings_page.dart';
 
 
 void main() async {
@@ -18,7 +19,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
- 
       debugShowCheckedModeBanner: false,
       home: HomePage(),
     );

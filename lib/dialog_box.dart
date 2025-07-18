@@ -2,16 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:todoapp/button.dart';
 
 
-class DialogBox extends StatelessWidget {
+class DialogBox extends StatefulWidget {
 
  final VoidCallback onSave;
  final VoidCallback onCancel;
+ 
 
   final TextEditingController controller;
-  const DialogBox({super.key,
+   const DialogBox({super.key,
   required this.controller,
   required this.onSave,
-  required this.onCancel});
+  required this.onCancel,
+  
+  });
+
+  @override
+  State<DialogBox> createState() => _DialogBoxState();
+}
+
+class _DialogBoxState extends State<DialogBox> {
+String? errorText;
+
+void validateAndSave(){
+  if (widget.controller.text.trim().isEmpty){
+    setState(() {
+      errorText = "Please Enter a task";
+    });
+  }else{
+    setState(() {
+      errorText=null;
+    });
+    widget.onSave();
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -19,23 +42,32 @@ class DialogBox extends StatelessWidget {
       backgroundColor: Color.fromRGBO(72, 74, 74, 1),
       content: SizedBox(
         height: 150,
-        width: 150,
+        width: double.infinity,
           child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             const SizedBox(
-              height: 30,
+              height: 10,
             ),
             TextField(
+              autofocus: true,
+              maxLines: 1,
+              
+              controller: widget.controller,
+              onChanged: (value){
+                if (errorText != null && value.trim().isNotEmpty){
+                  setState(() {
+                    errorText=null;
+                  });
+                }
+              },
               style: TextStyle(
                 color: Colors.white
               ),
-              controller: controller,
+             
               decoration: InputDecoration(
-                
+                errorText:errorText,
                 border: OutlineInputBorder(),
-                
-                
                 label:Text( 'Add a New task'),
                 labelStyle: TextStyle(
                   color: Colors.white
@@ -43,13 +75,13 @@ class DialogBox extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 10,
+              height: 8,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                MyButton(onPressed: onCancel, text: 'Cancel'),
-                MyButton(onPressed: onSave, text: 'Save',),
+                MyButton(onPressed: widget.onCancel, text: 'Cancel'),
+                MyButton(onPressed: validateAndSave, text: 'Save',),
                 
               ],
             )
