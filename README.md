@@ -2,7 +2,7 @@
 
 ![App Screenshot 1 - Initial State] <img src="assets/images/Screenshot1.png" width="250" height="auto">
 
-![App Screenshot 1 - Initial State](assets/images/Screenshot1.png)
+![App Screenshot 1 - Initial State]<img src="assets/images/Screenshot1.png" width="250" height="auto">
 _A sneak peek at the app when you first open it!_
 
 Hey everyone! I'm really excited to share my first Flutter application. I built this project from scratch as a beginner. It’s a simple to-do list manager designed to help you keep track of your tasks without any extra fluff.
